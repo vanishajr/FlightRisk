@@ -6,6 +6,7 @@ import RiskFactorsChart from './RiskFactorsChart';
 import Recommendations from './Recommendations';
 import { calculateRisk, RiskAssessment, FlightData } from '@/services/riskCalculator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const initialFlightData: FlightData = {
   speed: 550,
@@ -20,6 +21,7 @@ const Dashboard = () => {
   const [riskAssessment, setRiskAssessment] = useState<RiskAssessment>(
     calculateRisk(initialFlightData)
   );
+  const isMobile = useIsMobile();
 
   const handleDataSubmit = (data: Record<string, number>) => {
     const flightData: FlightData = {
@@ -49,13 +51,15 @@ const Dashboard = () => {
                 <CardTitle className="text-xl">Flight Risk Assessment</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex flex-col md:flex-row items-center gap-6">
+                <div className="flex flex-col items-center gap-6">
                   <RiskIndicator 
                     level={riskAssessment.level} 
                     score={riskAssessment.score} 
                   />
-                  <div className="flex-1">
-                    <RiskFactorsChart riskAssessment={riskAssessment} />
+                  <div className={`${isMobile ? 'w-full overflow-x-auto' : 'flex-1'}`}>
+                    <div className={isMobile ? 'min-w-[320px]' : 'w-full'}>
+                      <RiskFactorsChart riskAssessment={riskAssessment} />
+                    </div>
                   </div>
                 </div>
               </CardContent>
