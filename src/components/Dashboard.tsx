@@ -51,15 +51,13 @@ const Dashboard = () => {
                 <CardTitle className="text-xl">Flight Risk Assessment</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex flex-col items-center gap-6">
+                <div className="flex flex-col md:flex-row items-center gap-6">
                   <RiskIndicator 
                     level={riskAssessment.level} 
                     score={riskAssessment.score} 
                   />
-                  <div className={`${isMobile ? 'w-full overflow-x-auto' : 'flex-1'}`}>
-                    <div className={isMobile ? 'min-w-[320px]' : 'w-full'}>
-                      <RiskFactorsChart riskAssessment={riskAssessment} />
-                    </div>
+                  <div className={`${isMobile ? 'w-full overflow-x-auto' : 'w-full'}`}>
+                    <RiskFactorsChart riskAssessment={riskAssessment} />
                   </div>
                 </div>
               </CardContent>
