@@ -22,8 +22,34 @@ export type RiskAssessment = {
   };
 };
 
+// Define types for our thresholds
+type BaseThreshold = {
+  low: number;
+  high: number;
+  weight: number;
+  description: string;
+};
+
+type StandardThreshold = BaseThreshold;
+
+type TemperatureThreshold = BaseThreshold & {
+  ideal: number;
+};
+
+type VisibilityThreshold = BaseThreshold;
+
+// Define the structure for the thresholds object
+interface ThresholdsMap {
+  speed: StandardThreshold;
+  acceleration: StandardThreshold;
+  temperature: TemperatureThreshold;
+  humidity: StandardThreshold;
+  windSpeed: StandardThreshold;
+  visibility: VisibilityThreshold;
+}
+
 // Default thresholds for each parameter
-const thresholds = {
+const thresholds: ThresholdsMap = {
   speed: {
     low: 500, // below this is low risk
     high: 600, // above this is high risk
@@ -64,8 +90,8 @@ const thresholds = {
 };
 
 // Calculate risk score for individual factor
-function calculateFactorRisk(value: number, factorName: string): number {
-  const threshold = thresholds[factorName as keyof typeof thresholds];
+function calculateFactorRisk(value: number, factorName: keyof ThresholdsMap): number {
+  const threshold = thresholds[factorName];
   
   // Special cases
   if (factorName === 'visibility') {
@@ -77,8 +103,9 @@ function calculateFactorRisk(value: number, factorName: string): number {
   
   if (factorName === 'temperature') {
     // Temperature risk is based on deviation from ideal
-    const deviation = Math.abs(value - threshold.ideal);
-    const range = Math.max(threshold.ideal - threshold.low, threshold.high - threshold.ideal);
+    const temperatureThreshold = threshold as TemperatureThreshold;
+    const deviation = Math.abs(value - temperatureThreshold.ideal);
+    const range = Math.max(temperatureThreshold.ideal - temperatureThreshold.low, temperatureThreshold.high - temperatureThreshold.ideal);
     return Math.min(deviation / range, 1);
   }
   
@@ -98,10 +125,11 @@ export function calculateRisk(data: FlightData): RiskAssessment {
   let totalWeight = 0;
   
   for (const [key, value] of Object.entries(data)) {
-    const threshold = thresholds[key as keyof typeof thresholds];
+    const factorKey = key as keyof ThresholdsMap;
+    const threshold = thresholds[factorKey];
     if (!threshold) continue;
     
-    const factorRisk = calculateFactorRisk(value, key);
+    const factorRisk = calculateFactorRisk(value, factorKey);
     totalRisk += factorRisk * threshold.weight;
     totalWeight += threshold.weight;
     
