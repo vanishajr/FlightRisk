@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   Card, 
@@ -47,9 +46,10 @@ type FlightDataFormValues = z.infer<typeof flightDataSchema>;
 
 interface FlightDataFormProps {
   onSubmitData: (data: Record<string, number>) => void;
+  isLoading?: boolean;
 }
 
-const FlightDataForm = ({ onSubmitData }: FlightDataFormProps) => {
+const FlightDataForm = ({ onSubmitData, isLoading = false }: FlightDataFormProps) => {
   const form = useForm<FlightDataFormValues>({
     resolver: zodResolver(flightDataSchema),
     defaultValues: {
@@ -95,7 +95,7 @@ const FlightDataForm = ({ onSubmitData }: FlightDataFormProps) => {
                   <FormItem>
                     <FormLabel>Speed (knots)</FormLabel>
                     <FormControl>
-                      <Input placeholder="Speed" {...field} />
+                      <Input placeholder="Speed" {...field} disabled={isLoading} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -107,7 +107,7 @@ const FlightDataForm = ({ onSubmitData }: FlightDataFormProps) => {
                   <FormItem>
                     <FormLabel>Acceleration (knots/min)</FormLabel>
                     <FormControl>
-                      <Input placeholder="Acceleration" {...field} />
+                      <Input placeholder="Acceleration" {...field} disabled={isLoading} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -119,7 +119,7 @@ const FlightDataForm = ({ onSubmitData }: FlightDataFormProps) => {
                   <FormItem>
                     <FormLabel>Temperature (°C)</FormLabel>
                     <FormControl>
-                      <Input placeholder="Temperature" {...field} />
+                      <Input placeholder="Temperature" {...field} disabled={isLoading} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -131,7 +131,7 @@ const FlightDataForm = ({ onSubmitData }: FlightDataFormProps) => {
                   <FormItem>
                     <FormLabel>Humidity (%)</FormLabel>
                     <FormControl>
-                      <Input placeholder="Humidity" {...field} />
+                      <Input placeholder="Humidity" {...field} disabled={isLoading} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -143,7 +143,7 @@ const FlightDataForm = ({ onSubmitData }: FlightDataFormProps) => {
                   <FormItem>
                     <FormLabel>Wind Speed (knots)</FormLabel>
                     <FormControl>
-                      <Input placeholder="Wind Speed" {...field} />
+                      <Input placeholder="Wind Speed" {...field} disabled={isLoading} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -155,7 +155,7 @@ const FlightDataForm = ({ onSubmitData }: FlightDataFormProps) => {
                   <FormItem>
                     <FormLabel>Visibility (km)</FormLabel>
                     <FormControl>
-                      <Input placeholder="Visibility" {...field} />
+                      <Input placeholder="Visibility" {...field} disabled={isLoading} />
                     </FormControl>
                     <FormDescription>
                       Distance with clear visibility in kilometers
@@ -164,7 +164,9 @@ const FlightDataForm = ({ onSubmitData }: FlightDataFormProps) => {
                 )}
               />
             </div>
-            <Button type="submit" className="w-full">Update Risk Assessment</Button>
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? 'Calculating...' : 'Update Risk Assessment'}
+            </Button>
           </form>
         </Form>
       </CardContent>
