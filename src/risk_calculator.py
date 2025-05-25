@@ -16,10 +16,7 @@ class RiskAssessment(TypedDict):
     score: float
     level: Literal['low', 'medium', 'high']
     factors: Dict[str, Dict[str, float | str]]
-
-# Define fuzzy membership functions
 def create_fuzzy_system():
-    # Universe of discourse
     speed_range = np.arange(0, 1000, 1)
     accel_range = np.arange(-5, 5, 0.1)
     temp_range = np.arange(-20, 50, 0.1)
@@ -28,7 +25,6 @@ def create_fuzzy_system():
     visibility_range = np.arange(0, 20, 0.1)
     risk_range = np.arange(0, 1.1, 0.1)
 
-    # Fuzzy membership functions
     speed = ctrl.Antecedent(speed_range, 'speed')
     acceleration = ctrl.Antecedent(accel_range, 'acceleration')
     temperature = ctrl.Antecedent(temp_range, 'temperature')
@@ -37,7 +33,6 @@ def create_fuzzy_system():
     visibility = ctrl.Antecedent(visibility_range, 'visibility')
     risk = ctrl.Consequent(risk_range, 'risk')
 
-    # Define membership functions
     speed['low'] = fuzz.trimf(speed_range, [0, 400, 500])
     speed['medium'] = fuzz.trimf(speed_range, [400, 550, 600])
     speed['high'] = fuzz.trimf(speed_range, [550, 600, 1000])
@@ -89,18 +84,15 @@ def calculate_risk(data: FlightData) -> RiskAssessment:
         'visibility': 0.15
     }
 
-    # Calculate individual factor risks using fuzzy logic
     for factor, value in data.items():
         if factor in fuzzy_system:
             antecedent = fuzzy_system[factor]
             risk = fuzzy_system['risk']
             
-            # Calculate membership values
+            
             low_membership = fuzz.interp_membership(antecedent.universe, antecedent['low'].mf, value)
             medium_membership = fuzz.interp_membership(antecedent.universe, antecedent['medium'].mf, value)
             high_membership = fuzz.interp_membership(antecedent.universe, antecedent['high'].mf, value)
-            
-            # Calculate risk score using weighted average
             factor_risk = (low_membership * 0.2 + medium_membership * 0.5 + high_membership * 0.8)
             total_risk += factor_risk * weights[factor]
             
@@ -111,10 +103,8 @@ def calculate_risk(data: FlightData) -> RiskAssessment:
                 'description': get_factor_description(factor)
             }
 
-    # Normalize risk score to 0-100 range
     normalized_score = round(total_risk * 100)
-    
-    # Determine risk level
+  
     if normalized_score <= 30:
         level = 'low'
     elif normalized_score <= 70:
