@@ -1,8 +1,12 @@
 
 import React from 'react';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, LogOut } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Header = () => {
+  const { user, logout } = useAuth();
+
   return (
     <header className="bg-primary text-primary-foreground py-4 px-6 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
@@ -10,19 +14,25 @@ const Header = () => {
           <AlertCircle size={24} />
           <h1 className="text-xl font-semibold">Flight Risk Vision</h1>
         </div>
-        <nav>
-          <ul className="flex space-x-4">
-            <li>
-              <a href="#" className="hover:text-secondary">Dashboard</a>
-            </li>
-            <li>
-              <a href="#" className="hover:text-secondary">History</a>
-            </li>
-            <li>
-              <a href="#" className="hover:text-secondary">Settings</a>
-            </li>
-          </ul>
-        </nav>
+        
+        <div className="flex items-center space-x-4">
+          {user && (
+            <div className="flex items-center space-x-4">
+              <span className="text-sm">
+                {user.email} ({user.role})
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={logout}
+                className="text-primary-foreground border-primary-foreground hover:bg-primary-foreground hover:text-primary"
+              >
+                <LogOut size={16} className="mr-2" />
+                Logout
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
