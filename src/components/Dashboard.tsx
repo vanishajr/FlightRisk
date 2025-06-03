@@ -4,7 +4,8 @@ import FlightDataForm from './FlightDataForm';
 import RiskIndicator from './RiskIndicator';
 import RiskFactorsChart from './RiskFactorsChart';
 import Recommendations from './Recommendations';
-import { calculateRisk, RiskAssessment, FlightData } from '@/services/riskCalculator';
+import FuzzyRulesDisplay from './FuzzyRulesDisplay';
+import { calculateFuzzyRisk, FuzzyRiskAssessment, FlightData } from '@/services/fuzzyRiskCalculator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -18,8 +19,8 @@ const initialFlightData: FlightData = {
 };
 
 const Dashboard = () => {
-  const [riskAssessment, setRiskAssessment] = useState<RiskAssessment>(
-    calculateRisk(initialFlightData)
+  const [riskAssessment, setRiskAssessment] = useState<FuzzyRiskAssessment>(
+    calculateFuzzyRisk(initialFlightData)
   );
   const isMobile = useIsMobile();
 
@@ -33,7 +34,7 @@ const Dashboard = () => {
       visibility: data.visibility
     };
     
-    const newRiskAssessment = calculateRisk(flightData);
+    const newRiskAssessment = calculateFuzzyRisk(flightData);
     setRiskAssessment(newRiskAssessment);
   };
 
@@ -48,7 +49,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 gap-6">
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-xl">Flight Risk Assessment</CardTitle>
+                <CardTitle className="text-xl">Fuzzy Logic Risk Assessment</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col md:flex-row items-center gap-6">
@@ -62,6 +63,8 @@ const Dashboard = () => {
                 </div>
               </CardContent>
             </Card>
+            
+            <FuzzyRulesDisplay riskAssessment={riskAssessment} />
             
             <Recommendations riskAssessment={riskAssessment} />
           </div>

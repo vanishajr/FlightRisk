@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import RiskIndicator from './RiskIndicator';
 import RiskFactorsChart from './RiskFactorsChart';
 import Recommendations from './Recommendations';
-import { calculateRisk, RiskAssessment, FlightData } from '@/services/riskCalculator';
+import FuzzyRulesDisplay from './FuzzyRulesDisplay';
+import { calculateFuzzyRisk, FuzzyRiskAssessment, FlightData } from '@/services/fuzzyRiskCalculator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -18,8 +19,8 @@ const mockFlightData: FlightData = {
 };
 
 const PassengerDashboard = () => {
-  const [riskAssessment] = useState<RiskAssessment>(
-    calculateRisk(mockFlightData)
+  const [riskAssessment] = useState<FuzzyRiskAssessment>(
+    calculateFuzzyRisk(mockFlightData)
   );
   const isMobile = useIsMobile();
 
@@ -28,14 +29,14 @@ const PassengerDashboard = () => {
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-center">Current Flight Status</h1>
         <p className="text-muted-foreground text-center mt-2">
-          Real-time flight safety information for passengers
+          Real-time fuzzy logic flight safety analysis for passengers
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-xl">Flight Risk Assessment</CardTitle>
+            <CardTitle className="text-xl">Fuzzy Logic Risk Assessment</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col md:flex-row items-center gap-6">
@@ -85,6 +86,8 @@ const PassengerDashboard = () => {
             </CardContent>
           </Card>
 
+          <FuzzyRulesDisplay riskAssessment={riskAssessment} />
+          
           <Recommendations riskAssessment={riskAssessment} />
         </div>
       </div>

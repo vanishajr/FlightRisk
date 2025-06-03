@@ -11,17 +11,20 @@ import {
   ResponsiveContainer,
   Cell
 } from 'recharts';
-import { RiskAssessment } from '@/services/riskCalculator';
+import { FuzzyRiskAssessment } from '@/services/fuzzyRiskCalculator';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface RiskFactorsChartProps {
-  riskAssessment: RiskAssessment;
+  riskAssessment: FuzzyRiskAssessment;
 }
 
-const getRiskColor = (risk: number) => {
-  if (risk <= 0.3) return '#4ade80';
-  if (risk <= 0.7) return '#facc15';
-  return '#f87171';
+const getRiskColor = (dominantSet: string) => {
+  switch (dominantSet) {
+    case 'low': return '#4ade80';
+    case 'medium': return '#facc15';
+    case 'high': return '#f87171';
+    default: return '#94a3b8';
+  }
 };
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -32,7 +35,10 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         <p className="font-medium">{`${data.name}`}</p>
         <p>{`${data.description}`}</p>
         <p>{`Value: ${data.value}`}</p>
-        <p>{`Risk: ${(data.risk * 100).toFixed(1)}%`}</p>
+        <p>{`Dominant Set: ${data.dominantSet}`}</p>
+        <p>{`Low: ${(data.fuzzyValues.low * 100).toFixed(1)}%`}</p>
+        <p>{`Medium: ${(data.fuzzyValues.medium * 100).toFixed(1)}%`}</p>
+        <p>{`High: ${(data.fuzzyValues.high * 100).toFixed(1)}%`}</p>
       </div>
     );
   }
@@ -44,10 +50,12 @@ const RiskFactorsChart = ({ riskAssessment }: RiskFactorsChartProps) => {
   
   const chartData = Object.entries(riskAssessment.factors).map(([key, data]) => ({
     name: key.charAt(0).toUpperCase() + key.slice(1),
-    risk: data.risk,
+    riskValue: data.fuzzyValues.high + (data.fuzzyValues.medium * 0.5), // Combined risk score
     value: data.value,
     description: data.description,
-    weight: data.weight
+    weight: data.weight,
+    dominantSet: data.dominantSet,
+    fuzzyValues: data.fuzzyValues
   }));
 
   return (
@@ -78,9 +86,9 @@ const RiskFactorsChart = ({ riskAssessment }: RiskFactorsChartProps) => {
             height={36}
             wrapperStyle={isMobile ? { fontSize: '10px' } : undefined}
           />
-          <Bar dataKey="risk" name="Risk Factor">
+          <Bar dataKey="riskValue" name="Fuzzy Risk Factor">
             {chartData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={getRiskColor(entry.risk)} />
+              <Cell key={`cell-${index}`} fill={getRiskColor(entry.dominantSet)} />
             ))}
           </Bar>
         </BarChart>
