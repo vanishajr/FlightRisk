@@ -2,4 +2,4 @@
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/35350074-73d8-4490-882f-d8456703bd29
+**URL**: https://flightrisk.netlify.app/
