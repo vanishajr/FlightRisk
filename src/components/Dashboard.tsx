@@ -5,6 +5,7 @@ import RiskIndicator from './RiskIndicator';
 import RiskFactorsChart from './RiskFactorsChart';
 import Recommendations from './Recommendations';
 import FuzzyRulesDisplay from './FuzzyRulesDisplay';
+import PilotAlerts, { Alert } from './PilotAlerts';
 import { calculateFuzzyRisk, FuzzyRiskAssessment, FlightData } from '@/services/fuzzyRiskCalculator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -22,6 +23,15 @@ const Dashboard = () => {
   const [riskAssessment, setRiskAssessment] = useState<FuzzyRiskAssessment>(
     calculateFuzzyRisk(initialFlightData)
   );
+  const [alerts, setAlerts] = useState<Alert[]>([
+    {
+      id: '1',
+      message: 'Welcome aboard! We are currently experiencing smooth flying conditions.',
+      severity: 'info',
+      timestamp: new Date(),
+      from: 'Captain'
+    }
+  ]);
   const isMobile = useIsMobile();
 
   const handleDataSubmit = (data: Record<string, number>) => {
@@ -38,11 +48,27 @@ const Dashboard = () => {
     setRiskAssessment(newRiskAssessment);
   };
 
+  const handleSendAlert = (message: string, severity: 'info' | 'warning' | 'critical') => {
+    const newAlert: Alert = {
+      id: Date.now().toString(),
+      message,
+      severity,
+      timestamp: new Date(),
+      from: 'Captain'
+    };
+    setAlerts(prev => [newAlert, ...prev]);
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-1">
+        <div className="md:col-span-1 space-y-6">
           <FlightDataForm onSubmitData={handleDataSubmit} />
+          <PilotAlerts 
+            isForPilot={true} 
+            alerts={alerts} 
+            onSendAlert={handleSendAlert}
+          />
         </div>
         
         <div className="md:col-span-2">

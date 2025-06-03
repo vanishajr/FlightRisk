@@ -22,10 +22,10 @@ const Header = () => {
                 {user.email} ({user.role})
               </span>
               <Button
-                variant="outline"
+                variant="secondary"
                 size="sm"
                 onClick={logout}
-                className="text-primary-foreground border-primary-foreground hover:bg-primary-foreground hover:text-primary"
+                className="bg-white text-primary hover:bg-gray-100"
               >
                 <LogOut size={16} className="mr-2" />
                 Logout
