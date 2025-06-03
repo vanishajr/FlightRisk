@@ -5,10 +5,11 @@ import RiskIndicator from './RiskIndicator';
 import RiskFactorsChart from './RiskFactorsChart';
 import Recommendations from './Recommendations';
 import FuzzyRulesDisplay from './FuzzyRulesDisplay';
-import PilotAlerts, { Alert } from './PilotAlerts';
+import PilotAlerts from './PilotAlerts';
 import { calculateFuzzyRisk, FuzzyRiskAssessment, FlightData } from '@/services/fuzzyRiskCalculator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAlerts } from '@/contexts/AlertContext';
 
 const initialFlightData: FlightData = {
   speed: 550,
@@ -23,15 +24,7 @@ const Dashboard = () => {
   const [riskAssessment, setRiskAssessment] = useState<FuzzyRiskAssessment>(
     calculateFuzzyRisk(initialFlightData)
   );
-  const [alerts, setAlerts] = useState<Alert[]>([
-    {
-      id: '1',
-      message: 'Welcome aboard! We are currently experiencing smooth flying conditions.',
-      severity: 'info',
-      timestamp: new Date(),
-      from: 'Captain'
-    }
-  ]);
+  const { alerts, addAlert } = useAlerts();
   const isMobile = useIsMobile();
 
   const handleDataSubmit = (data: Record<string, number>) => {
@@ -49,14 +42,7 @@ const Dashboard = () => {
   };
 
   const handleSendAlert = (message: string, severity: 'info' | 'warning' | 'critical') => {
-    const newAlert: Alert = {
-      id: Date.now().toString(),
-      message,
-      severity,
-      timestamp: new Date(),
-      from: 'Captain'
-    };
-    setAlerts(prev => [newAlert, ...prev]);
+    addAlert(message, severity, 'Captain');
   };
 
   return (

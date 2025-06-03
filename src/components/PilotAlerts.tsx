@@ -5,14 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { AlertTriangle, Send, Clock } from 'lucide-react';
-
-export type Alert = {
-  id: string;
-  message: string;
-  severity: 'info' | 'warning' | 'critical';
-  timestamp: Date;
-  from: string;
-};
+import { Alert } from '@/contexts/AlertContext';
 
 interface PilotAlertsProps {
   isForPilot?: boolean;
@@ -102,6 +95,9 @@ const PilotAlerts = ({ isForPilot = false, alerts, onSendAlert }: PilotAlertsPro
                         <span className="text-xs opacity-70 flex items-center gap-1">
                           <Clock className="h-3 w-3" />
                           {alert.timestamp.toLocaleTimeString()}
+                        </span>
+                        <span className="text-xs opacity-70">
+                          from {alert.from}
                         </span>
                       </div>
                     </div>

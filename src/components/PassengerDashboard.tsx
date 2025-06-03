@@ -5,13 +5,14 @@ import RiskFactorsChart from './RiskFactorsChart';
 import Recommendations from './Recommendations';
 import FuzzyRulesDisplay from './FuzzyRulesDisplay';
 import FlightAwareness from './FlightAwareness';
-import PilotAlerts, { Alert } from './PilotAlerts';
+import PilotAlerts from './PilotAlerts';
 import EntertainmentCorner from './EntertainmentCorner';
 import FlightReport from './FlightReport';
 import { calculateFuzzyRisk, FuzzyRiskAssessment, FlightData } from '@/services/fuzzyRiskCalculator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAlerts } from '@/contexts/AlertContext';
 
 // Mock real-time data - in a real app, this would come from sensors or APIs
 const mockFlightData: FlightData = {
@@ -27,22 +28,7 @@ const PassengerDashboard = () => {
   const [riskAssessment] = useState<FuzzyRiskAssessment>(
     calculateFuzzyRisk(mockFlightData)
   );
-  const [alerts] = useState<Alert[]>([
-    {
-      id: '1',
-      message: 'Welcome aboard! We are currently experiencing smooth flying conditions.',
-      severity: 'info',
-      timestamp: new Date(),
-      from: 'Captain'
-    },
-    {
-      id: '2', 
-      message: 'Please remain seated as we encounter some light turbulence.',
-      severity: 'warning',
-      timestamp: new Date(Date.now() - 300000),
-      from: 'Crew'
-    }
-  ]);
+  const { alerts } = useAlerts();
   const isMobile = useIsMobile();
 
   return (
