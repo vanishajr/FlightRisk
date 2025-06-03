@@ -1,4 +1,3 @@
-
 // Define fuzzy sets for each parameter
 export type FuzzySet = {
   low: { min: number; max: number; peak?: number };
@@ -114,22 +113,22 @@ function getDominantSet(fuzzyValues: { low: number; medium: number; high: number
 // Fuzzy rules for risk assessment
 const fuzzyRules = [
   // High risk rules
-  { condition: (factors: any) => factors.speed.dominantSet === 'high' && factors.windSpeed.dominantSet === 'high', risk: 'high', description: 'High speed with high wind speed' },
-  { condition: (factors: any) => factors.visibility.dominantSet === 'low' && factors.windSpeed.dominantSet === 'high', risk: 'high', description: 'Low visibility with high wind speed' },
-  { condition: (factors: any) => factors.acceleration.dominantSet === 'high' && factors.speed.dominantSet === 'high', risk: 'high', description: 'High acceleration with high speed' },
+  { condition: (factors: FuzzyRiskAssessment['factors']) => factors.speed.dominantSet === 'high' && factors.windSpeed.dominantSet === 'high', risk: 'high', description: 'High speed with high wind speed' },
+  { condition: (factors: FuzzyRiskAssessment['factors']) => factors.visibility.dominantSet === 'low' && factors.windSpeed.dominantSet === 'high', risk: 'high', description: 'Low visibility with high wind speed' },
+  { condition: (factors: FuzzyRiskAssessment['factors']) => factors.acceleration.dominantSet === 'high' && factors.speed.dominantSet === 'high', risk: 'high', description: 'High acceleration with high speed' },
   
   // Medium risk rules
-  { condition: (factors: any) => factors.speed.dominantSet === 'medium' && factors.windSpeed.dominantSet === 'medium', risk: 'medium', description: 'Medium speed with medium wind speed' },
-  { condition: (factors: any) => factors.temperature.dominantSet === 'high' && factors.humidity.dominantSet === 'high', risk: 'medium', description: 'High temperature with high humidity' },
-  { condition: (factors: any) => factors.visibility.dominantSet === 'medium', risk: 'medium', description: 'Medium visibility conditions' },
+  { condition: (factors: FuzzyRiskAssessment['factors']) => factors.speed.dominantSet === 'medium' && factors.windSpeed.dominantSet === 'medium', risk: 'medium', description: 'Medium speed with medium wind speed' },
+  { condition: (factors: FuzzyRiskAssessment['factors']) => factors.temperature.dominantSet === 'high' && factors.humidity.dominantSet === 'high', risk: 'medium', description: 'High temperature with high humidity' },
+  { condition: (factors: FuzzyRiskAssessment['factors']) => factors.visibility.dominantSet === 'medium', risk: 'medium', description: 'Medium visibility conditions' },
   
   // Low risk rules (default)
-  { condition: (factors: any) => factors.speed.dominantSet === 'low' && factors.windSpeed.dominantSet === 'low', risk: 'low', description: 'Low speed with low wind speed' },
-  { condition: (factors: any) => factors.visibility.dominantSet === 'high' && factors.temperature.dominantSet === 'medium', risk: 'low', description: 'High visibility with optimal temperature' }
+  { condition: (factors: FuzzyRiskAssessment['factors']) => factors.speed.dominantSet === 'low' && factors.windSpeed.dominantSet === 'low', risk: 'low', description: 'Low speed with low wind speed' },
+  { condition: (factors: FuzzyRiskAssessment['factors']) => factors.visibility.dominantSet === 'high' && factors.temperature.dominantSet === 'medium', risk: 'low', description: 'High visibility with optimal temperature' }
 ];
 
 // Apply fuzzy rules and calculate overall risk
-function applyFuzzyRules(factors: any): { risk: 'low' | 'medium' | 'high'; appliedRules: string[] } {
+function applyFuzzyRules(factors: FuzzyRiskAssessment['factors']): { risk: 'low' | 'medium' | 'high'; appliedRules: string[] } {
   const appliedRules: string[] = [];
   let riskScores = { low: 0, medium: 0, high: 0 };
   
